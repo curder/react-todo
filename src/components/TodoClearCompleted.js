@@ -1,17 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import {inject, observer} from "mobx-react";
 
-const TodoClearCompleted = (props) => {
+const TodoClearCompleted = inject('TodoStore')(observer(props => {
+  const {handleClearCompleted} = props.TodoStore;
   return (
     <div>
-      <button onClick={props.handleClearCompleted}>Clear Completed
+      <button onClick={handleClearCompleted}>Clear Completed
       </button>
     </div>
   );
-};
+}));
 
 TodoClearCompleted.propTypes = {
-  handleClearCompleted: PropTypes.func.isRequired,
+  // handleClearCompleted: PropTypes.func.isRequired,
 };
 
 export default TodoClearCompleted;

@@ -1,24 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {inject, observer} from "mobx-react";
 
-const TodoCheckAll = (props) => {
+const TodoCheckAll = inject('TodoStore')(observer(props => {
+  const {anyRemaining, handleCheckAll} = props.TodoStore;
   return (
     <div>
       <label>
-        <input defaultChecked={() => {
-          props.anyRemaining()
-        }}
-               onClick={props.handleCheckAll}
+        <input defaultChecked={anyRemaining}
+               onClick={handleCheckAll}
                type="checkbox"/>
         Check All
       </label>
     </div>
   );
-};
+}));
 
 TodoCheckAll.propTypes = {
-  anyRemaining: PropTypes.func.isRequired,
-  handleCheckAll: PropTypes.func.isRequired,
+  // TodoStore: PropTypes.object.isRequired,
+  // anyRemaining: PropTypes.func.isRequired,
+  // handleCheckAll: PropTypes.func.isRequired,
 };
 
 export default TodoCheckAll;

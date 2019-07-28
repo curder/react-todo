@@ -1,14 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as classNames from 'classnames';
+import {inject, observer} from "mobx-react";
 
-const TodoItem = props => {
+const TodoItem = inject('TodoStore')(observer(props => {
+  const {handleCheckboxChange, handleEditTodo, handleDoneEdit, handleCancelEdit, handleDelete} = props.TodoStore;
+
   return (
     <div className="todo-item">
       <div className="todo-item-left">
         <input type="checkbox" checked={props.todo.completed}
                onChange={(event) => {
-                 props.handleCheckboxChange(props.todo, event, props.index)
+                 handleCheckboxChange(props.todo, event)
                }}/>
 
         {!props.todo.editing &&
@@ -17,7 +20,7 @@ const TodoItem = props => {
           'completed': props.todo.completed
         })}
              onDoubleClick={(event) => {
-               props.handleEditTodo(props.todo, event, props.index)
+               handleEditTodo(props.todo, event)
              }}
         >{props.todo.title}</div>
         }
@@ -25,33 +28,33 @@ const TodoItem = props => {
         <input className="todo-item-edit"
                autoFocus
                onBlur={(event) => {
-                 props.handleDoneEdit(props.todo, event, props.index)
+                 handleDoneEdit(props.todo, event)
                }}
                onKeyUp={(event) => {
                  if (event.key === 'Enter') {
-                   props.handleDoneEdit(props.todo, event, props.index)
+                   handleDoneEdit(props.todo, event)
                  } else if (event.key === 'Escape') {
-                   props.handleCancelEdit(props.todo, event, props.index)
+                   handleCancelEdit(props.todo, event)
                  }
                }}
                defaultValue={props.todo.title}/>
         }
       </div>
       <div className="remove-item" onClick={() => {
-        props.handleDelete(props.index);
+        handleDelete(props.todo.id);
       }}>&times;</div>
     </div>
   );
-};
+}));
 
 TodoItem.propTypes = {
   todo: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired,
-  handleCheckboxChange: PropTypes.func.isRequired,
-  handleEditTodo: PropTypes.func.isRequired,
-  handleDoneEdit: PropTypes.func.isRequired,
-  handleCancelEdit: PropTypes.func.isRequired,
-  handleDelete: PropTypes.func.isRequired,
+  // index: PropTypes.number.isRequired,
+  // handleCheckboxChange: PropTypes.func.isRequired,
+  // handleEditTodo: PropTypes.func.isRequired,
+  // handleDoneEdit: PropTypes.func.isRequired,
+  // handleCancelEdit: PropTypes.func.isRequired,
+  // handleDelete: PropTypes.func.isRequired,
 };
 
 export default TodoItem;
