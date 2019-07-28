@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
-import * as classNames from 'classnames';
 import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
-import logo from './logo.svg';
-import './App.css';
-
+import logo from '../logo.svg';
+import '../App.css';
+import TodosRemaining from "./TodosRemaining";
+import TodoItem from "./TodoItem";
+import TodoCheckAll from "./TodoCheckAll";
+import TodoFiltered from './TodoFiltered';
+import TodoClearCompleted from "./TodoClearCompleted";
 class App extends Component {
   constructor(props) {
     super(props);
@@ -167,93 +170,36 @@ class App extends Component {
                                    transitionLeaveTimeout={300}>
             {this.handleTodoFiltered(this.state.filter).map((todo, index) => {
             return (
-              <div className="todo-item" key={todo.id}>
-                <div className="todo-item-left">
-                  <input type="checkbox" checked={todo.completed}
-                         onChange={(event) => {
-                    this.handleCheckboxChange(todo, event, index)
-                  }}/>
-                  {/*<div className={'todo-item-label' + (todo.completed ? ' completed' : '')}>{todo.title}</div>*/}
-
-                  {!todo.editing &&
-                  <div className={classNames({
-                    'todo-item-label': true,
-                    'completed': todo.completed
-                  })}
-                       onDoubleClick={(event) => {
-                         this.handleEditTodo(todo, event, index)
-                       }}
-                  >{todo.title}</div>
-                  }
-                  {todo.editing &&
-                  <input className="todo-item-edit"
-                         autoFocus
-                         onBlur={(event) => {
-                           this.handleDoneEdit(todo, event, index)
-                         }}
-                         onKeyUp={(event) => {
-                           if (event.key === 'Enter') {
-                             this.handleDoneEdit(todo, event, index)
-                           } else if (event.key === 'Escape') {
-                             this.handleCancelEdit(todo, event, index)
-                           }
-                         }}
-                         defaultValue={todo.title}/>
-                  }
-                </div>
-                <div className="remove-item" onClick={() => {
-                  this.handleDelete(index);
-                }}>&times;</div>
-              </div>
+              <TodoItem key={todo.id} todo={todo} index={index}
+                        handleCheckboxChange={this.handleCheckboxChange}
+                        handleEditTodo={this.handleEditTodo}
+                        handleDoneEdit={this.handleDoneEdit}
+                        handleCancelEdit={this.handleCancelEdit}
+                        handleDelete={this.handleDelete}
+              />
             );
           })}
           </ReactCSSTransitionGroup>
 
           <div className="extra-container">
 
-            <div>
-              <label><input defaultChecked={() => {
-                this.anyRemaining()
-              }}
-                            onClick={this.handleCheckAll}
-                            type="checkbox"/> Check All</label>
-            </div>
+            <TodoCheckAll anyRemaining={this.anyRemaining}
+                          handleCheckAll={this.handleCheckAll}/>
 
-            <div>{this.remaining()} items
-              left
-            </div>
+            <TodosRemaining remaining={this.remaining()}/>
 
           </div>
 
           <div className="extra-container">
 
-            <div>
-              <button onClick={(event) => {
-                this.handleUpdateFilter('all')
-              }}
-                      className={classNames({'active': this.state.filter === 'all'})}
-              >All
-              </button>
-              <button onClick={(event) => {
-                this.handleUpdateFilter('active')
-              }}
-                      className={classNames({'active': this.state.filter === 'active'})}>Active
-              </button>
-              <button onClick={(event) => {
-                this.handleUpdateFilter('completed')
-              }}
-                      className={classNames({'active': this.state.filter === 'completed'})}>Completed
-              </button>
-            </div>
+            <TodoFiltered handleUpdateFilter={this.handleUpdateFilter}
+                          filter={this.state.filter}/>
+
             <ReactCSSTransitionGroup transitionName="fade"
                                      transitionEnterTimeout={300}
                                      transitionLeaveTimeout={300}>
               {this.state.todos.filter(todo => todo.completed).length > 0 &&
-              <div>
-
-                <button onClick={this.handleClearCompleted}>Clear Completed
-                </button>
-              </div>
+                <TodoClearCompleted handleClearCompleted={this.handleClearCompleted} />
               }
             </ReactCSSTransitionGroup>
           </div>
